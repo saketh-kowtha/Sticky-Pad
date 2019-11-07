@@ -1,0 +1,195 @@
+<html>
+	<head>
+        <title>Sticky Pad</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <style>
+        	body{
+            	margin: 0px;
+  				box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  				transition: 0.3s;
+            }
+            .Header  button {
+              background-color: white;
+              border: none;
+              outline: none;
+              margin: 10px 5px;
+              padding: 5px 10px;
+              cursor: pointer;
+              box-shadow: 0 .5px 1px 0 rgba(0,0,0,0.2);
+            }
+            .Header select{
+            	outline: none;
+            }
+            .Header  button:hover{
+              box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+            }
+            .editor{margin: 5px;outline: none;}
+            input[type='radio']{
+                margin: 5px;
+            }
+        </style>
+        <script>
+         
+
+            function insertRadio(){
+                let radio = document.createElement('input')
+                radio.type = 'checkbox'
+                let div = document.createElement('div')
+                div.appendChild(radio)
+                document.getElementById('editor').appendChild(div)
+            }
+
+        	function bold(){
+                document.execCommand('bold', false, '')
+            }
+
+            function insertImage(){
+                let dip = document.createElement('input')
+                dip.style.display = 'none'
+                dip.type = 'file'
+                dip.click()
+                dip.addEventListener('change', function(){
+                    document.execCommand('insertImage', false, dip.files[0].name)
+                })
+            }
+
+            function justifyCenter(){
+                document.execCommand('justifyCenter', false, '')
+            }
+
+            function justifyLeft(){
+                document.execCommand('justifyLeft', false, '')
+            }
+
+            function justifyRight(){
+                document.execCommand('justifyRight', false, '')
+            }
+
+            function copy(){
+                copyStringToClipboard(document.getElementById('editor').innerHTML)
+            }
+
+            function fontName(){
+                let fontName = document.getElementById('font-family').value
+                document.execCommand('fontName', false, fontName)
+            }
+
+            function copyStringToClipboard (str) {
+                // Create new element
+                var el = document.createElement('textarea');
+                // Set value (string to be copied)
+                el.value = str;
+                // Set non-editable to avoid focus and move outside of view
+                el.setAttribute('readonly', '');
+                el.style = {position: 'absolute', left: '-9999px'};
+                document.body.appendChild(el);
+                // Select text inside element
+                el.select();
+                // Copy text to clipboard
+                document.execCommand('copy');
+                // Remove temporary element
+                document.body.removeChild(el);
+            }
+
+            function print(){
+                let win = window.open('', 'PRINT', 'height=400,width=600')
+                win.document.write('<html><head><title>PRINT</title></head><body>');
+                win.document.write(document.getElementById('editor').innerHTML)
+                win.document.write('<body></html>');
+                win.document.close(); // necessary for IE >= 10
+                win.focus(); // necessary for IE >= 10*/
+
+                win.print();
+                win.close();
+                return true
+            }
+
+            function insertLink(){
+                let link = prompt("Enter URL")
+                document.execCommand('createLink', false, link)
+            }
+
+            function fontSize(){
+                let fontsize = document.getElementById('font-size').value
+                document.execCommand('fontSize', false, fontsize)                
+            }
+
+            function italic(){
+                document.execCommand('italic', false, '')
+            }
+
+            function underline(){
+                document.execCommand('underline', false, '')
+            }
+
+            function horzLine(){
+                document.execCommand('insertHorizontalRule', false, '')
+            }
+
+        	function genList(list, idName, defaultValue){
+            	list.forEach(e => {
+					let x = document.createElement('option')
+					x.innerHTML = e.label
+                    x.value = e.value
+                    if(e === defaultValue)
+                    	x.selected = true
+					document.getElementById(idName).appendChild(x)
+                })
+            }
+        	window.addEventListener('load', function(){	
+            	genList([{label: 'Label', value: 2}, {label: 'Title',  value: 4}, {label: 'Paragraph', value: 6}, {label: 'Heading 1' , value: 8}], 'font-size', 2)     
+            	genList([{label: "Arial", value: 'arial'}, {label: "Courier New", value: 'Courier New'}, {label: "Times New Roman", value: 'Times New Roman'}], 'font-family', "Roboto")   
+                document.getElementById('editor').focus()
+                
+            })
+        </script>
+    </head>
+    <body>
+    	<div class="Header">
+        	<div style="display: flex">
+            	<button onclick='bold()'><b>B</b></button>
+            	<button onclick='italic()'><i>i</i></button>
+            	<button onclick='underline()'><u>U</u></button>
+            	<button>
+                  <select id='font-size' onchange="fontSize()">
+                  </select>
+                </button>
+                <button>
+                  <select id='font-family' onchange="fontName()">
+                  </select>
+                </button>
+              <button onclick="insertImage()">
+                    <i class="material-icons">insert_photo</i>
+              </button>
+              <button  onclick="justifyLeft()">
+                    <i class="material-icons">format_align_left</i>            
+              </button>
+              <button onclick="justifyCenter()">
+                <i class="material-icons">format_align_center</i>
+              </button>
+              <button onclick="justifyRight()">
+                <i class="material-icons">format_align_right</i>
+              </button>
+              <button onclick="horzLine()">__</button>
+              <button onclick="insertRadio()">
+                    <i class="material-icons">mode_edit</i>            
+              </button>
+              <button><a onclick="insertLink()">
+                    <i class="material-icons">insert_link</i>            
+              </a></button>
+              <button onclick="copy()">
+                    <i class="material-icons">content_copy</i>            
+              </button>
+              <button onclick="print()">
+                    <i class="material-icons">print</i>            
+              </button>
+            </div>
+        </div>
+        <div class='editor' id='editor' contentEditable = true >
+        	ok
+        </div>
+    </body>
+</html> 
